@@ -1,0 +1,59 @@
+"use strict";
+
+function debounce(func, wait = 20, immediate = true) {
+  var timeout;
+  return function () {
+    var context = this,
+      args = arguments;
+    var later = function () {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+}
+
+const sliderImages = document.querySelectorAll(".slide-in");
+
+function checkSlide() {
+  sliderImages.forEach((sliderImage) => {
+    // half way through the image
+    const slideInAt =
+      window.scrollY + window.innerHeight - sliderImage.height / 5;
+    // bottom of the image
+    const imageBottom = sliderImage.offsetTop + sliderImage.height;
+    const isHalfShown = slideInAt > sliderImage.offsetTop;
+    const isNotScrolledPast = window.scrollY < imageBottom;
+    if (isHalfShown && isNotScrolledPast) {
+      sliderImage.classList.add("active");
+    } else {
+      sliderImage.classList.remove("active");
+    }
+  });
+}
+
+window.addEventListener("scroll", debounce(checkSlide));
+
+const hamburgerButton = document.querySelector(".hamburg-btn");
+const removeButton = document.querySelector(".remove-btn");
+const dropDownNav = document.querySelector(".nav-drop-down");
+const main = document.querySelector(".main");
+
+function showDropDown() {
+  main.classList.add("blur");
+  dropDownNav.classList.add("show-nav");
+}
+
+function hideDropDown() {
+  main.classList.remove("blur");
+  dropDownNav.classList.remove("show-nav");
+}
+
+hamburgerButton.addEventListener("click", showDropDown);
+removeButton.addEventListener("click", hideDropDown);
+
+const imageRow = document.querySelector("scroll-container");
+const images = document.querySelector(".about-img");
